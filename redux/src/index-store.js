@@ -1,5 +1,7 @@
-import {createStore} from "redux";
+import {createStore, applyMiddleware} from "redux";
 import {createSlice} from '@reduxjs/toolkit';
+import createSaga from 'redux-saga';
+import indexReduxSaga from "./index-redux-saga";
 
 const {reducer} = createSlice({
     name: 'counter',
@@ -7,12 +9,18 @@ const {reducer} = createSlice({
         value: 1
     },
     reducers: {
-        add(state){
-            return {...state, value: state.value + 1};
+        setval(state, action){
+            return {...state, value: action.value};
         }
     }
 })
 
-const indexStore = createStore(reducer);
+const reduxSaga = createSaga();
+const indexStore = createStore(
+    reducer,
+    applyMiddleware(reduxSaga)
+);
+
+reduxSaga.run(indexReduxSaga);
 
 export default indexStore;
